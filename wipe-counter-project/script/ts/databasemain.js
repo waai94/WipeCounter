@@ -11,9 +11,8 @@ input.addEventListener("input", () => {
 });
 button.addEventListener("click", async () => {
     const value = input.value;
-
     const text = input.value.trim();
-    if (text.length == 0) {
+    if (text.length === 0) {
         alert("Please enter a valid message.");
         return;
     }
@@ -24,18 +23,19 @@ button.addEventListener("click", async () => {
         return;
     }
     await fetchLatestMessages(); // メッセージを再取得して表示を更新
-        input.value = ""; // 入力フィールドをクリア
+    input.value = ""; // 入力フィールドをクリア
 });
 async function fetchLatestMessages() {
-    const { data, error } = await supabase.from("messages").select("*").order("created_at", { ascending: false }).limit(1); // 最新の1件のメッセージを取得
+    const { data, error } = await supabase.from("begin").select("*").order("created_at", { ascending: false }).limit(1); // 最新の1件のメッセージを取得
     if (error) {
         console.error("Error fetching messages:", error);
         return;
     }
     output.innerHTML = ""; // 出力フィールドをクリア
-    data.forEach((message) => {
+    data.forEach((begin) => {
         const p = document.createElement("p");
-        p.textContent = message.content;
+        p.textContent = begin.content;
         output.appendChild(p);
     });
 }
+document.addEventListener("DOMContentLoaded", fetchLatestMessages); // ページ読み込み時にメッセージを取得
