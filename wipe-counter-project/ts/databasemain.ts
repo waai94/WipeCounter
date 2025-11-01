@@ -1,0 +1,50 @@
+import {createClient} from "@supabase/supabase-js";
+
+const supabaseUrl = "https://ntsgsutiifeelufmtrkt.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50c2dzdXRpaWZlZWx1Zm10cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzIyMjAsImV4cCI6MjA3NzMwODIyMH0.HpTgcFM5jlsI29B4TnWGWFJHuUCcioO-9ke0OSSjfEA";
+export const supabase = createClient(supabaseUrl, supabaseKey);
+
+const input = document.getElementById("input") as HTMLInputElement; // 入力フィールド
+const output = document.getElementById("output") as HTMLParagraphElement;// 出力フィールド
+const button = document.getElementById("click") as HTMLButtonElement;// ボタン要素
+
+input.addEventListener("input", () => { // 入力イベントリスナーを追加
+    const value = input.value;// 入力値を取得
+    output.textContent = `You typed: ${value}`;// 出力フィールドに表示
+});
+
+button.addEventListener("click", async () => { // ボタンクリックイベントリスナーを追加
+    const value = input.value;
+   
+    input.value = ""; // 入力フィールドをクリア
+
+    const text =input.value.trim();
+    if(text.length ===0){
+        alert("Please enter a valid message.");
+        return;
+    }
+
+    const {error} = await supabase.from("begin").insert([{content: text}]); // Supabaseにデータを挿入
+    if(error){
+        console.error("Error inserting message:", error);
+        alert("Failed to send message. Please try again.");
+        return;
+    }
+    await fetchLatestMessages(); // メッセージを再取得して表示を更新
+});
+
+async function fetchLatestMessages(){
+
+    const {data, error} = await supabase.from("messages").select("*").order("created_at", {ascending: false}).limit(1); // 最新の1件のメッセージを取得
+    if(error){
+        console.error("Error fetching messages:", error);
+        return;
+    }
+    output.innerHTML = ""; // 出力フィールドをクリア
+    data.forEach((message) => {
+        const p = document.createElement("p");
+        p.textContent = message.content;
+        output.appendChild(p);
+    });
+
+}
