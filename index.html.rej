@@ -1,0 +1,17 @@
+diff a/index.html b/index.html	(rejected hunks)
+@@ -9,6 +9,13 @@
+ <p>This is a simple web page to get started with databases.</p>
+ <input type="text" id ="input"  placeholder="Input your database name here"/>
+ <button id="click">送信</button>
+-    <script type="module" src="/wipe-counter-project/script/ts/databasemain.js"></script>
++<button id="debugClick">デバッグ</button>
++    <script type="module" src="./wipe-counter-project/script/ts/databasemain.js ">
++  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
++
++  const supabaseUrl = 'https://ntsgsutiifeelufmtrkt.supabase.co';
++  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50c2dzdXRpaWZlZWx1Zm10cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzIyMjAsImV4cCI6MjA3NzMwODIyMH0.HpTgcFM5jlsI29B4TnWGWFJHuUCcioO-9ke0OSSjfEA';
++  const supabase = createClient(supabaseUrl, supabaseKey);
++    </script>
+ </body>
+ </html>
+\ No newline at end of file
