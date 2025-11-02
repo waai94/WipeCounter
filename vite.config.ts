@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   base: "/WipeCounter/", // ← リポジトリ名を入れる
-  root: "./src", // ソースコードのディレクトリ
+  root: "./", // ソースコードのディレクトリ
   server: {
     port: 5173,   // 好きなポート
   },
