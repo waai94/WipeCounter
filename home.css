@@ -9,12 +9,29 @@ label{
     font-weight: bold;
 }
 
+h1
+{
+    text-align: center;
+    color: #333;
+    margin-bottom: 24px;}
+
+    p{
+        text-align: center;
+        color: #666;
+        margin-bottom: 24px;
+    }
+
 select, input {
   width: 200px;         /* 幅をそろえる */
   margin-bottom: 12px;  /* 下の要素との間隔 */
   padding: 4px;
 }
 
+.form-center{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
 .form-row{
     display: flex;
     gap: 16px;
@@ -26,7 +43,14 @@ select, input {
     flex-direction: column;
 }
 
-
+.wipe-button{
+    margin-top: 12px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
 
 #raid_table{
     width: 100%;
@@ -43,3 +67,31 @@ select, input {
 #raid_table tr:hover{
     background-color: aliceblue;
 }
+
+.raid-0
+{
+    background-color: rgb(241, 196, 159);
+}
+.raid-1 {
+    background-color: rgb(212, 212, 212);
+}
+
+.raid-2 {
+    background-color: rgb(254, 255, 174);
+}
+
+.raid-3
+{
+    background-color: rgb(255, 227, 200);
+}
+
+.raid-4
+{
+    background-color: rgb(213, 190, 255);
+}
+
+.raid-5
+{
+    background-color: rgb(185, 223, 248);
+}
+

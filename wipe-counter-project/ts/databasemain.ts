@@ -1,105 +1,198 @@
-import {createClient} from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
+// ==============================
+//  Supabase 初期化
+// ==============================
 const supabaseUrl = "https://ntsgsutiifeelufmtrkt.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50c2dzdXRpaWZlZWx1Zm10cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzIyMjAsImV4cCI6MjA3NzMwODIyMH0.HpTgcFM5jlsI29B4TnWGWFJHuUCcioO-9ke0OSSjfEA";
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-const input = document.getElementById("input") as HTMLInputElement; // 入力フィールド
-const output = document.getElementById("output") as HTMLParagraphElement;// 出力フィールド
-const button = document.getElementById("click") as HTMLButtonElement;// ボタン要素
-const raidSelect = document.getElementById("raidSelect") as HTMLSelectElement;// セレクトボックス
-    const wipePhaseSelect = document.getElementById("wipePhaseSelect") as HTMLSelectElement;// pセレクトボックス
-    const raidTableBody = document.querySelector("#raid_table tbody") as HTMLTableSectionElement;// テーブルボディ
-// セレクトボックスにオプションを追加
-const raids =[{value: "TUOB",text:"絶バハムート討滅戦"}, //
-    {value: "UWU",text:"絶アルテマウェポン破壊作戦"},
-    {value: "TEA",text:"絶アレキサンダー討滅戦"},
-    {value: "DSR",text:"絶竜詩戦争"},
-    {value: "TOP",text:"絶オメガ検証戦"},
-    {value: "FRU",text:"絶もう一つの未来"}];
+// ==============================
+//  DOM 参照
+// ==============================
+const input = document.getElementById("input") as HTMLInputElement;
+const output = document.getElementById("output") as HTMLParagraphElement;
+const button = document.getElementById("click") as HTMLButtonElement;
+const raidSelect = document.getElementById("raidSelect") as HTMLSelectElement;
+const wipePhaseSelect = document.getElementById("wipePhaseSelect") as HTMLSelectElement;
+const raidTableBody = document.querySelector("#raid_table tbody") as HTMLTableSectionElement;
 
-const wipephases = [
-    {value: "p1", text: "p1"},
-    {value: "p2", text: "p2"},
-    {value: "p3", text: "p3"},
-    {value: "p4", text: "p4"},
-    {value: "p5", text: "p5"},
-    {value: "p6", text: "p6"},
-    {value: "p7", text: "p7"},
-    {value: "p8", text: "p8"},
-    {value: "p9", text: "p9"},
+const filterRaidSelect = document.getElementById("filterRaidSelect") as HTMLSelectElement;
+const filterWipePhaseSelect = document.getElementById("filterWipePhaseSelect") as HTMLSelectElement;
+const filterButton = document.getElementById("filterButton") as HTMLButtonElement;
+const clearFilterButton = document.getElementById("clearFilterButton") as HTMLButtonElement;
+
+// ==============================
+//  定義データ
+// ==============================
+const raids = [
+  { value: "TUOB", text: "絶バハムート討滅戦" },
+  { value: "UWU", text: "絶アルテマウェポン破壊作戦" },
+  { value: "TEA", text: "絶アレキサンダー討滅戦" },
+  { value: "DSR", text: "絶竜詩戦争" },
+  { value: "TOP", text: "絶オメガ検証戦" },
+  { value: "FRU", text: "絶もう一つの未来" }
 ];
 
-raids.forEach(raid => {
-    const option = document.createElement("option");
-    option.value = raid.value;
-    option.textContent = raid.text;
+const wipephases = Array.from({ length: 9 }, (_, i) => ({
+  value: `p${i + 1}`,
+  text: `p${i + 1}`
+}));
+
+// ==============================
+//  初期化処理
+// ==============================
+function setupSelectOptions() {
+  raids.forEach(raid => {
+    const option = new Option(raid.text, raid.value);
     raidSelect.appendChild(option);
-});
+    filterRaidSelect.appendChild(option.cloneNode(true));
+  });
 
-wipephases.forEach(phase => {
-    const option = document.createElement("option");
-    option.value = phase.value;
-    option.textContent = phase.text;
+  wipephases.forEach(phase => {
+    const option = new Option(phase.text, phase.value);
     wipePhaseSelect.appendChild(option);
-});
-input.addEventListener("input", () => { // 入力イベントリスナーを追加
-    const value = input.value;// 入力値を取得
-    output.textContent = `You typed: ${value}`;// 出力フィールドに表示
-});
-
-button.addEventListener("click", async () => { // ボタンクリックイベントリスナーを追加
-    const value = input.value;
-   
-    
-
-    let text =input.value.trim();
-    if(text.length ===0){
-        
-       text = "nope";
-    }
-    const raid = Number(raidSelect.selectedIndex); // セレクトボックスの値を取得
-    const wipePhase = Number(wipePhaseSelect.selectedIndex); // pセレクトボックスの値を取得
-
-    const {error} = await supabase.from("begin").insert([{content: text, raid_tag: raid, wipe_phase: wipePhase}]); // Supabaseにデータを挿入
-
-    if(error){
-        console.error("Error inserting message:", error);
-        alert("Failed to send message. Please try again.");
-        return;
-    }
-    await fetchLatestMessages(); // メッセージを再取得して表示を更新
-    input.value = ""; // 入力フィールドをクリア
-});
-
-async function fetchLatestMessages(){
-
-    const {data, error} = await supabase.from("begin").select("*").order("created_at", {ascending: false}).limit(25); // 最新の1件のメッセージを取得
-    if(error){
-        console.error("Error fetching messages:", error);
-
-        return;
-    }
-    raidTableBody.innerHTML = ""; // 出力フィールドをクリア
-    data.forEach((begin) => {
-   
- 
-
-        const raidName = raids[begin.raid_tag]?.text || "Unknown Raid";
-        const raidP = document.createElement("p");
-   
-
-        const tr = document.createElement("tr");
-       tr.innerHTML = `
-       <td>${new Date(begin.created_at).toLocaleString()}</td>
-            <td>${raidName}</td>
-            <td>${wipephases[begin.wipe_phase]?.text || "Unknown Phase"}</td>
-            <td>${begin.content}</td>
-        `;
-        raidTableBody.appendChild(tr);
-
-    });
-console.log("updated");
+    filterWipePhaseSelect.appendChild(option.cloneNode(true));
+  });
 }
 
-document.addEventListener("DOMContentLoaded", fetchLatestMessages); // ページ読み込み時にメッセージを取得
+function getRaidNumberFromName(raidName: string): number {
+  const index = raids.findIndex(r => r.text === raidName);
+  return index >= 0 ? index : -1;
+}
+
+// ==============================
+//  データ操作
+// ==============================
+async function insertMessage() {
+  let text = input.value.trim() || "nope";
+  const raid = raidSelect.selectedIndex;
+  const wipePhase = wipePhaseSelect.selectedIndex;
+
+  const { error } = await supabase
+    .from("begin")
+    .insert([{ content: text, raid_tag: raid, wipe_phase: wipePhase }]);
+
+  if (error) {
+    console.error("Error inserting message:", error);
+    alert("送信に失敗しました。");
+    return;
+  }
+
+  await fetchLatestMessages();
+  input.value = "";
+}
+
+// ==============================
+//  データ取得・描画
+// ==============================
+async function fetchLatestMessages() {
+  console.log("fetchLatestMessages called");
+  const { data, error } = await supabase
+    .from("begin")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(25);
+
+  if (error) {
+    console.error("Error fetching messages:", error);
+    return;
+  }
+
+  raidTableBody.innerHTML = "";
+
+  data.forEach(begin => {
+    const raidName = raids[begin.raid_tag]?.text || "Unknown Raid";
+    const raidClass = `raid-${getRaidNumberFromName(raidName)}`;
+
+    const tr = document.createElement("tr");
+
+    const dateTd = createCell(new Date(begin.created_at).toLocaleString(), raidClass);
+    const raidTd = createCell(raidName, raidClass);
+    const wipeTd = createCell(wipephases[begin.wipe_phase]?.text || "Unknown Phase", raidClass);
+    const contentTd = createCell(begin.content, raidClass);
+
+    tr.append(dateTd, raidTd, wipeTd, contentTd);
+    raidTableBody.appendChild(tr);
+  });
+
+  console.log("updated");
+}
+
+function createCell(text: string, className: string): HTMLTableCellElement {
+  const td = document.createElement("td");
+  td.textContent = text;
+  td.classList.add(className);
+  return td;
+}
+
+// ==============================
+//  フィルタリング
+// ==============================
+async function filterMessages() {
+  const raid = filterRaidSelect.selectedIndex;
+  const wipePhase = filterWipePhaseSelect.selectedIndex;
+
+  let query = supabase
+    .from("begin")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(25);
+
+  if (raid > 0) query = query.eq("raid_tag", raid);
+  if (wipePhase > 0) query = query.eq("wipe_phase", wipePhase);
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error fetching filtered messages:", error);
+    return;
+  }
+
+  raidTableBody.innerHTML = "";
+
+  data.forEach(begin => {
+    const raidName = raids[begin.raid_tag]?.text || "Unknown Raid";
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${new Date(begin.created_at).toLocaleString()}</td>
+      <td>${raidName}</td>
+      <td>${wipephases[begin.wipe_phase]?.text || "Unknown Phase"}</td>
+      <td>${begin.content}</td>
+    `;
+
+    raidTableBody.appendChild(tr);
+  });
+
+  console.log("filtered");
+}
+
+function clearFilters() {
+  filterRaidSelect.selectedIndex = 0;
+  filterWipePhaseSelect.selectedIndex = 0;
+  fetchLatestMessages();
+}
+
+// ==============================
+//  イベント登録
+// ==============================
+function setupEventListeners() {
+  input.addEventListener("input", () => {
+    output.textContent = `You typed: ${input.value}`;
+  });
+
+  button.addEventListener("click", insertMessage);
+  filterButton.addEventListener("click", filterMessages);
+  clearFilterButton.addEventListener("click", clearFilters);
+}
+
+// ==============================
+//  起動処理
+// ==============================
+document.addEventListener("DOMContentLoaded", () => {
+  setupSelectOptions();
+  setupEventListeners();
+  fetchLatestMessages();
+  // setInterval(fetchLatestMessages, 5000);
+});
