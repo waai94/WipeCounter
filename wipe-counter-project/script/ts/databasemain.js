@@ -7,6 +7,7 @@ const output = document.getElementById("output"); // 出力フィールド
 const button = document.getElementById("click"); // ボタン要素
 const raidSelect = document.getElementById("raidSelect"); // セレクトボックス
 const wipePhaseSelect = document.getElementById("wipePhaseSelect"); // pセレクトボックス
+const raidTableBody = document.querySelector("#raid_table tbody"); // テーブルボディ
 // セレクトボックスにオプションを追加
 const raids = [{ value: "TUOB", text: "絶バハムート討滅戦" }, //
     { value: "UWU", text: "絶アルテマウェポン破壊作戦" },
@@ -43,10 +44,9 @@ input.addEventListener("input", () => {
 });
 button.addEventListener("click", async () => {
     const value = input.value;
-    const text = input.value.trim();
+    let text = input.value.trim();
     if (text.length === 0) {
-        alert("Please enter a valid message.");
-        return;
+        text = "nope";
     }
     const raid = Number(raidSelect.selectedIndex); // セレクトボックスの値を取得
     const wipePhase = Number(wipePhaseSelect.selectedIndex); // pセレクトボックスの値を取得
@@ -60,21 +60,25 @@ button.addEventListener("click", async () => {
     input.value = ""; // 入力フィールドをクリア
 });
 async function fetchLatestMessages() {
-    const { data, error } = await supabase.from("begin").select("*").order("created_at", { ascending: false }).limit(1); // 最新の1件のメッセージを取得
+    const { data, error } = await supabase.from("begin").select("*").order("created_at", { ascending: false }).limit(25); // 最新の1件のメッセージを取得
     if (error) {
         console.error("Error fetching messages:", error);
         return;
     }
-    output.innerHTML = ""; // 出力フィールドをクリア
+    raidTableBody.innerHTML = ""; // 出力フィールドをクリア
     data.forEach((begin) => {
-        var _a;
-        const p = document.createElement("p");
-        p.textContent = begin.content;
-        output.appendChild(p);
+        var _a, _b;
         const raidName = ((_a = raids[begin.raid_tag]) === null || _a === void 0 ? void 0 : _a.text) || "Unknown Raid";
         const raidP = document.createElement("p");
-        raidP.textContent = `Raid: ${raidName}`;
-        output.appendChild(raidP);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+       <td>${new Date(begin.created_at).toLocaleString()}</td>
+            <td>${raidName}</td>
+            <td>${((_b = wipephases[begin.wipe_phase]) === null || _b === void 0 ? void 0 : _b.text) || "Unknown Phase"}</td>
+            <td>${begin.content}</td>
+        `;
+        raidTableBody.appendChild(tr);
     });
+    console.log("updated");
 }
 document.addEventListener("DOMContentLoaded", fetchLatestMessages); // ページ読み込み時にメッセージを取得

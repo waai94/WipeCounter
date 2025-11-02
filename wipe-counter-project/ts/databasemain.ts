@@ -9,6 +9,7 @@ const output = document.getElementById("output") as HTMLParagraphElement;// 出�
 const button = document.getElementById("click") as HTMLButtonElement;// ボタン要素
 const raidSelect = document.getElementById("raidSelect") as HTMLSelectElement;// セレクトボックス
     const wipePhaseSelect = document.getElementById("wipePhaseSelect") as HTMLSelectElement;// pセレクトボックス
+    const raidTableBody = document.querySelector("#raid_table tbody") as HTMLTableSectionElement;// テーブルボディ
 // セレクトボックスにオプションを追加
 const raids =[{value: "TUOB",text:"絶バハムート討滅戦"}, //
     {value: "UWU",text:"絶アルテマウェポン破壊作戦"},
@@ -52,10 +53,10 @@ button.addEventListener("click", async () => { // ボタンクリックイベン
    
     
 
-    const text =input.value.trim();
+    let text =input.value.trim();
     if(text.length ===0){
-        alert("Please enter a valid message.");
-        return;
+        
+       text = "nope";
     }
     const raid = Number(raidSelect.selectedIndex); // セレクトボックスの値を取得
     const wipePhase = Number(wipePhaseSelect.selectedIndex); // pセレクトボックスの値を取得
@@ -73,24 +74,32 @@ button.addEventListener("click", async () => { // ボタンクリックイベン
 
 async function fetchLatestMessages(){
 
-    const {data, error} = await supabase.from("begin").select("*").order("created_at", {ascending: false}).limit(1); // 最新の1件のメッセージを取得
+    const {data, error} = await supabase.from("begin").select("*").order("created_at", {ascending: false}).limit(25); // 最新の1件のメッセージを取得
     if(error){
         console.error("Error fetching messages:", error);
 
         return;
     }
-    output.innerHTML = ""; // 出力フィールドをクリア
+    raidTableBody.innerHTML = ""; // 出力フィールドをクリア
     data.forEach((begin) => {
-        const p = document.createElement("p");
-        p.textContent = begin.content;
-        output.appendChild(p);
+   
+ 
 
         const raidName = raids[begin.raid_tag]?.text || "Unknown Raid";
         const raidP = document.createElement("p");
-        raidP.textContent = `Raid: ${raidName}`;
-        output.appendChild(raidP);
-    });
+   
 
+        const tr = document.createElement("tr");
+       tr.innerHTML = `
+       <td>${new Date(begin.created_at).toLocaleString()}</td>
+            <td>${raidName}</td>
+            <td>${wipephases[begin.wipe_phase]?.text || "Unknown Phase"}</td>
+            <td>${begin.content}</td>
+        `;
+        raidTableBody.appendChild(tr);
+
+    });
+console.log("updated");
 }
 
 document.addEventListener("DOMContentLoaded", fetchLatestMessages); // ページ読み込み時にメッセージを取得
