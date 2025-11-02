@@ -8,6 +8,7 @@ const input = document.getElementById("input") as HTMLInputElement; // 入力フ
 const output = document.getElementById("output") as HTMLParagraphElement;// 出力フィールド
 const button = document.getElementById("click") as HTMLButtonElement;// ボタン要素
 const raidSelect = document.getElementById("raidSelect") as HTMLSelectElement;// セレクトボックス
+    const wipePhaseSelect = document.getElementById("wipePhaseSelect") as HTMLSelectElement;// pセレクトボックス
 // セレクトボックスにオプションを追加
 const raids =[{value: "TUOB",text:"絶バハムート討滅戦"}, //
     {value: "UWU",text:"絶アルテマウェポン破壊作戦"},
@@ -16,6 +17,18 @@ const raids =[{value: "TUOB",text:"絶バハムート討滅戦"}, //
     {value: "TOP",text:"絶オメガ検証戦"},
     {value: "FRU",text:"絶もう一つの未来"}];
 
+const wipephases = [
+    {value: "p1", text: "p1"},
+    {value: "p2", text: "p2"},
+    {value: "p3", text: "p3"},
+    {value: "p4", text: "p4"},
+    {value: "p5", text: "p5"},
+    {value: "p6", text: "p6"},
+    {value: "p7", text: "p7"},
+    {value: "p8", text: "p8"},
+    {value: "p9", text: "p9"},
+];
+
 raids.forEach(raid => {
     const option = document.createElement("option");
     option.value = raid.value;
@@ -23,6 +36,12 @@ raids.forEach(raid => {
     raidSelect.appendChild(option);
 });
 
+wipephases.forEach(phase => {
+    const option = document.createElement("option");
+    option.value = phase.value;
+    option.textContent = phase.text;
+    wipePhaseSelect.appendChild(option);
+});
 input.addEventListener("input", () => { // 入力イベントリスナーを追加
     const value = input.value;// 入力値を取得
     output.textContent = `You typed: ${value}`;// 出力フィールドに表示
@@ -39,10 +58,9 @@ button.addEventListener("click", async () => { // ボタンクリックイベン
         return;
     }
     const raid = Number(raidSelect.selectedIndex); // セレクトボックスの値を取得
-    const raidText = raidSelect.options[raidSelect.selectedIndex].text;
-console.log("Selected raid:", raid);
-console.log("Selected raid text:", raidText);
-    const {error} = await supabase.from("begin").insert([{content: text, raid_tag: raid}]); // Supabaseにデータを挿入
+    const wipePhase = Number(wipePhaseSelect.selectedIndex); // pセレクトボックスの値を取得
+
+    const {error} = await supabase.from("begin").insert([{content: text, raid_tag: raid, wipe_phase: wipePhase}]); // Supabaseにデータを挿入
 
     if(error){
         console.error("Error inserting message:", error);
@@ -66,6 +84,11 @@ async function fetchLatestMessages(){
         const p = document.createElement("p");
         p.textContent = begin.content;
         output.appendChild(p);
+
+        const raidName = raids[begin.raid_tag]?.text || "Unknown Raid";
+        const raidP = document.createElement("p");
+        raidP.textContent = `Raid: ${raidName}`;
+        output.appendChild(raidP);
     });
 
 }
