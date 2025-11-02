@@ -38,8 +38,12 @@ button.addEventListener("click", async () => { // ボタンクリックイベン
         alert("Please enter a valid message.");
         return;
     }
+    const raid = Number(raidSelect.selectedIndex); // セレクトボックスの値を取得
+    const raidText = raidSelect.options[raidSelect.selectedIndex].text;
+console.log("Selected raid:", raid);
+console.log("Selected raid text:", raidText);
+    const {error} = await supabase.from("begin").insert([{content: text, raid_tag: raid}]); // Supabaseにデータを挿入
 
-    const {error} = await supabase.from("begin").insert([{content: text}]); // Supabaseにデータを挿入
     if(error){
         console.error("Error inserting message:", error);
         alert("Failed to send message. Please try again.");
