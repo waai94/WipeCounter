@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style type ="text/css">
+ 
+</style>
+<title>Database Beginner</title>
+  <script type="module" crossorigin src="/assets/index-XCOKoUHq.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BjAfHzM5.css">
+</head>
+<body>
+<h1>FFXIV　絶ワイプカウンター</h1>
+<p>絶でどのフェーズでワイプしたか記録します。</p>
+<div class ="form-row">
+<div class ="form-item">
+<label for="raidSelect">レイド選択:</label>
+<select id="raidSelect"></select>
+</div>  
+<div class ="form-item">
+<label for="wipePhaseSelect">ワイプフェーズ選択:</label>
+<select id="wipePhaseSelect"></select>
+</div>
+<div class ="form-item">
+<label for="input">ワイプ理由、備考など入力:</label>
+<input type="text" id ="input"  placeholder="ワイプ理由、備考など"/>
+</div>
+<button id="click">送信</button>
+</div>
+
+
+<h2>過去のワイプ記録一覧</h2>
+<table id ="raid_table">
+    <thead>
+        <tr>
+               <th>Date</th>
+            <th>Raid Name</th>
+            <th>Wipe Phase</th>
+            <th>Message</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+</h2>
+<p id="output"> </p>
+<p id="raidP"></p>
+<p>9:24</p>
+</body>
+</html>
