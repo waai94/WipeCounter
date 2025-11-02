@@ -6,12 +6,13 @@
  
 </style>
 <title>Database Beginner</title>
-  <script type="module" crossorigin src="/WipeCounter/assets/index-C_whwqFQ.js"></script>
-  <link rel="stylesheet" crossorigin href="/WipeCounter/assets/index-BjAfHzM5.css">
+  <script type="module" crossorigin src="/WipeCounter/assets/index-vZcBP7J_.js"></script>
+  <link rel="stylesheet" crossorigin href="/WipeCounter/assets/index-CiE-KaQ0.css">
 </head>
 <body>
 <h1>FFXIV　絶ワイプカウンター</h1>
 <p>絶でどのフェーズでワイプしたか記録します。</p>
+<div class ="form-center"> 
 <div class ="form-row">
 <div class ="form-item">
 <label for="raidSelect">レイド選択:</label>
@@ -25,19 +26,32 @@
 <label for="input">ワイプ理由、備考など入力:</label>
 <input type="text" id ="input"  placeholder="ワイプ理由、備考など"/>
 </div>
-<button id="click">送信</button>
+<button id="click" class="wipe-button">送信</button>
+</div>
+</div>
+ 
+<div class ="form-row">
+    <div class ="form-item">
+    <label for="filterRaidSelect">レイド選択(フィルター用):</label>
+    <select id="filterRaidSelect"></select>
+    </div>  
+    <div class ="form-item">
+    <label for="filterWipePhaseSelect">ワイプフェーズ選択(フィルター用):</label>
+    <select id="filterWipePhaseSelect"></select>
+    </div>
+    <button id="filterButton">フィルター適用</button>
+    <button id="clearFilterButton">フィルタークリア</button>
 </div>
 
 
-<h2>過去のワイプ記録一覧</h2>
 <table id ="raid_table">
     <thead>
         <tr>
-               <th>Date</th>
-            <th>Raid Name</th>
-            <th>Wipe Phase</th>
-            <th>Message</th>
-            
+               <th>日時</th>
+            <th>レイド名</th>
+            <th>ワイプフェーズ</th>
+            <th>備考</th>
+
         </tr>
     </thead>
     <tbody>
