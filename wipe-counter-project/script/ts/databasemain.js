@@ -5,6 +5,20 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 const input = document.getElementById("input"); // 入力フィールド
 const output = document.getElementById("output"); // 出力フィールド
 const button = document.getElementById("click"); // ボタン要素
+const raidSelect = document.getElementById("raidSelect"); // セレクトボックス
+// セレクトボックスにオプションを追加
+const raids = [{ value: "TUOB", text: "絶バハムート討滅戦" }, //
+    { value: "UWU", text: "絶アルテマウェポン破壊作戦" },
+    { value: "TEA", text: "絶アレキサンダー討滅戦" },
+    { value: "DSR", text: "絶竜詩戦争" },
+    { value: "TOP", text: "絶オメガ検証戦" },
+    { value: "FRU", text: "絶もう一つの未来" }];
+raids.forEach(raid => {
+    const option = document.createElement("option");
+    option.value = raid.value;
+    option.textContent = raid.text;
+    raidSelect.appendChild(option);
+});
 input.addEventListener("input", () => {
     const value = input.value; // 入力値を取得
     output.textContent = `You typed: ${value}`; // 出力フィールドに表示
