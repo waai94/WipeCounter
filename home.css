@@ -44,12 +44,14 @@ select, input {
 }
 
 .wipe-button{
-    margin-top: 12px;
-    padding: 8px 16px;
+    margin-top: 0px;
+    padding: 15px 25px;
     background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
+    font-weight:  bold;
+    font-size:  16px;
 }
 
 #raid_table{
